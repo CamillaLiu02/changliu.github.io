@@ -1,0 +1,559 @@
+2:I[3735,["422","static/chunks/66ec4792-d5d326bb8cd66a11.js","521","static/chunks/521-1c761e0f621d8364.js","276","static/chunks/276-9c0b08954ed23776.js","878","static/chunks/878-64492d302f3503de.js","895","static/chunks/app/projects/page-8524db5ccdf63ffd.js"],"default"]
+6:I[4707,[],""]
+7:I[6423,[],""]
+8:I[5915,["422","static/chunks/66ec4792-d5d326bb8cd66a11.js","521","static/chunks/521-1c761e0f621d8364.js","276","static/chunks/276-9c0b08954ed23776.js","185","static/chunks/app/layout-35646626c84ab371.js"],"default"]
+9:I[2972,["422","static/chunks/66ec4792-d5d326bb8cd66a11.js","521","static/chunks/521-1c761e0f621d8364.js","276","static/chunks/276-9c0b08954ed23776.js","878","static/chunks/878-64492d302f3503de.js","931","static/chunks/app/page-49f3d014bd2cb9ca.js"],""]
+3:T29c1,
+## Overview
+
+This research project investigates how immersive virtual reality interfaces can lower the barrier to robotic manipulation by enabling intuitive, pose-based control of real-world robotic arms. Rather than programming joint-level commands, users interact with a virtual representation of a robot in 3D space through a Meta Quest 3 headset, specifying target poses that are automatically translated into executable motion on a physical UR3e collaborative robotic arm.
+
+The project builds upon an existing VR–robotics framework originally developed for a UR10 robot. My primary contribution focused on adapting, integrating, and validating this system for a different robot platform (UR3e), addressing hardware differences, kinematics constraints, and real-world deployment challenges.
+
+### Research Context
+
+This work is lead by **Callie Kim**, conducted within the [**People and Robots Laboratory**](https://peopleandrobots.wisc.edu/) at the University of Wisconsin-Madison, which focuses on human-robot interaction, collaborative manipulation, and intuitive interfaces for robotic control.
+
+---
+
+## Problem Statement & Motivation
+
+Traditional robot programming requires technical expertise—users must understand joint angles, coordinate frames, and motion constraints. This creates a significant barrier for non-expert users who want to control robots for specific tasks.
+
+**Key Research Questions:**
+- Can immersive VR interfaces make robotic manipulation more intuitive?
+- How do we bridge the gap between virtual interaction and physical execution?
+- What are the usability and safety tradeoffs in immersive teleoperation?
+
+By leveraging VR interaction patterns familiar from gaming and 3D modeling, this project explores whether users can effectively control complex robotic systems through spatial reasoning alone, without explicit programming knowledge.
+
+---
+
+## System Architecture
+
+### Technology Stack
+
+The system integrates three primary layers:
+
+**1. VR Interface Layer (Meta Quest 3 + Unity)**
+- Captures user hand poses and target specifications in 3D space
+- Provides real-time visual feedback of the virtual robot state
+- Communicates pose requests over network to ROS backend
+![Unity](/images/projects/vr-robot/unity.png)
+
+**2. ROS Control Pipeline (ROS Noetic + MoveIt)**
+- Receives pose targets from Unity application
+- Solves inverse kinematics using MoveIt's planning algorithms
+- Plans collision-free trajectories
+- Enforces safety constraints and workspace limits
+- Sends execution commands to physical robot
+![Unity](/images/projects/vr-robot/ros.jpg)
+
+**3. Physical Robot Execution (UR3e Collaborative Arm)**
+- Executes motion plans with real-time feedback
+- Provides safety monitoring and force-torque feedback
+- Reports execution status back through the pipeline
+![Unity](/images/projects/vr-robot/ur3e.png)
+
+### System Flow
+
+```
+VR User Input (Meta Quest 3)
+        ↓
+    Unity XR Interface
+        ↓
+    ROS Communication Bridge
+        ↓
+    MoveIt Motion Planning
+    (IK Solving + Trajectory Planning)
+        ↓
+    UR3e Robot Controller
+        ↓
+    Physical Robot Execution
+        ↓
+    Feedback Loop → VR Visualization
+```
+
+---
+
+## Key Technical Contributions
+
+### 1. Hardware Adaptation: UR10 → UR3e
+
+The original framework was designed for a UR10 robot. Adapting to UR3e required:
+
+**Kinematic Reconfiguration**
+- Modified URDF (robot description) files to reflect UR3e geometry
+- Recalibrated inverse kinematics solvers for different arm reach and DOF
+- Adjusted tool-center-point (TCP) offsets for end-effector configuration
+
+**Workspace Adjustments**
+- Redefined workspace boundaries (UR3e has ~500mm shorter reach than UR10)
+- Updated collision models and safety constraints
+- Validated joint limits and velocity constraints
+
+**Coordinate Frame Alignment**
+- Ensured consistent frame transformations between VR space and robot space
+- Debugged frame misalignments that caused pose failures
+- Implemented robust quaternion-to-Euler angle conversions
+
+### 2. VR-to-Robot Pipeline Integration
+
+**Pose-Based Control Architecture**
+- Captured user hand poses from Meta Quest 3 controllers
+- Transformed VR poses into robot base frame coordinates
+- Implemented pose validation before kinematic solving
+- Added fallback strategies for unreachable poses
+
+**Real-Time Feedback Loop**
+- Mirrored physical robot state back to VR visualization
+- Displayed reachability status, collision warnings, and IK failures
+- Provided haptic feedback through VR controllers for enhanced spatial awareness
+
+### 3. Motion Planning & Constraint Handling
+
+**MoveIt Integration**
+- Configured MoveIt's planning scene with UR3e URDF and collision geometry
+- Integrated RRTconnect motion planner for trajectory generation
+- Implemented time-parameterization for smooth execution
+
+**Safety & Validation**
+- Self-collision checking to prevent impossible poses
+- Environment collision checking for static obstacles
+- Pose reachability validation before attempting IK solving
+- Timeout handling for failed planning attempts
+
+### 4. Debugging & Iterative Validation
+
+**Key Challenges Encountered:**
+- **Inverse Kinematics Failures** – Certain poses were mathematically unreachable or had multiple solutions; solved through pose validation and user feedback
+- **Coordinate Frame Mismatches** – Virtual and physical spaces initially misaligned; debugged through frame visualization and careful transformation verification
+- **Orientation Ambiguity** – Small changes in VR hand orientation produced large robot motions; addressed with orientation filtering and user guidance
+- **Network Latency** – Delays between VR input and robot feedback; mitigated through predictive visualization and buffer strategies
+
+**Testing Methodology**
+- Iterative hardware-in-the-loop testing
+- Systematic validation of workspace edges and constraint boundaries
+- Usability pilot tests with early user interaction
+- Safety validation through supervised testing with multiple pose types
+
+---
+
+## Current Work & Future Directions
+
+### Adaptation
+- Transitioning the VR–robotics control pipeline from UR10 to UR3e in progress
+- Refining kinematics, motion planning, and pose alignment for reliable real-world execution
+- Iteratively testing and debugging VR-to-robot consistency during integration
+
+### User Research Study
+
+To validate the system, I designed a comparative user study for future deployment.
+
+#### Participants
+
+- **n = 24** (12 per condition, counterbalanced)
+- **Backgrounds**: 50% robotics students, 50% non-technical
+- **VR experience**: 6 novices, 12 intermediate, 6 experts
+
+#### Study Design
+
+**Independent Variable**: Control method (VR vs. Keyboard/Mouse)
+
+**Dependent Variables**:
+- Task completion time
+- Path efficiency (distance traveled)
+- Collision rate
+- NASA-TLX workload score
+- User preference (Likert scale)
+
+**Task**: Pick up a cube, navigate through a narrow gap, place it on a target platform
+
+#### Procedure
+
+1. 10-minute training with each interface
+2. 5 task repetitions per interface (recorded)
+3. Post-task questionnaire (SUS, NASA-TLX)
+4. Semi-structured interview
+
+**Current Status**:
+- Recruiting volunteers to test VR interface effectiveness
+- Measuring task completion time, accuracy, and cognitive load
+- Collecting feedback on usability and spatial understanding
+- Analyzing differences between expert and novice users
+
+### Paper Publication
+- Documenting framework adaptation process and technical insights
+- Submitting to robotics/HRI conference next semester
+- Sharing lessons learned in system integration and platform migration
+
+### Future Extensions
+
+- **Haptic Feedback Integration** – Adding force-feedback devices for proprioceptive guidance
+- **Multi-Robot Coordination** – Extending framework to coordinate multiple robotic arms
+- **Task Learning** – Enabling users to record and replay manipulation sequences
+- **Eye-Gaze Integration** – Using gaze tracking for enhanced spatial targeting
+- **Gesture-Based Commands** – Beyond pose specification, exploring natural gesture interfaces
+
+---
+
+## Learning Outcomes & Impact
+
+This project provided hands-on experience with:
+
+**Technical Skills**
+- Adapting research codebases across different hardware platforms
+- Debugging multi-layer systems integrating VR, ROS, and physical hardware
+- Understanding inverse kinematics limits, singularities, and workspace constraints
+- Implementing real-time communication between game engines and ROS
+
+**Research & Problem-Solving**
+- Systematic debugging of hardware-software integration issues
+- Validating technical solutions through iterative testing
+- Documenting design decisions and alternative approaches
+- Communicating technical complexity to diverse audiences
+
+**Human-Centered Design**
+- Evaluating usability tradeoffs in immersive interfaces
+- Considering safety and user experience in system design
+- Recognizing importance of feedback loops in human-robot interaction
+
+### Broader Significance
+
+This work contributes to a larger vision of **human-centered robotics**, where technical robustness, safety, and user experience must align for real-world deployment. By lowering the technical barrier to robot control, we can expand access to robotic capabilities beyond expert operators, enabling new applications in education, manufacturing, and personal robotics.
+
+---
+
+## Collaboration & Acknowledgments
+
+The original VR–robotics framework and ROS pipeline were developed by collaborating researchers. My role focused on platform adaptation, system integration, and validation—ensuring that research infrastructure designed for one robot could be reliably extended to different hardware with appropriate technical modifications.
+
+---
+
+## Reflections
+
+Building this system taught me that technical implementation is only one part of the story. Equally important is:
+
+1. **Understanding System Boundaries** – Knowing why the original framework was built for UR10 helped me understand what would change with UR3e
+2. **Embracing Iterative Validation** – Perfect solutions rarely work on first try; systematic testing revealed subtle coordinate-frame issues that would have been missed otherwise
+3. **Balancing Robustness & Usability** – Safety constraints sometimes conflict with intuitive interaction; finding the right balance requires user feedback
+4. **Documentation as Design** – Clear documentation of configuration choices enables future researchers to extend this work further
+
+The intersection of VR interaction and robotic control remains a rich area for research, and I'm excited to see how user studies and continued refinement can make these interfaces even more effective.
+4:Tcbc,
+<img
+  src="/images/projects/load-and-chaos/game.png"
+  alt="Game Play"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+## Intro
+
+Load and Chaos is a cooperative, Overcooked-inspired laundry simulation game built for a **COMPSCI 506** team project. Players manage a chaotic laundromat—sorting, washing, drying, and folding garments—while obeying care rules and racing the clock to keep customers happy.
+
+## Problem
+
+We needed to design and ship a fully playable co-op game while learning **Unity, C#, and Blender from scratch**, and also keep a four-person team aligned on version control, asset pipelines, and gameplay goals.
+
+## Approach
+
+<img
+  src="/images/projects/load-and-chaos/KANBAN%20BOARD.png"
+  alt="Kanban board"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+
+- **Core loop in Unity (C#):** Implemented interaction detection (ray casts), item pickup/drop, machine states (washer/dryer timers), and scoring with penalties for mistakes or neglect.
+- **Level and UI design:** Built laundromat layouts, timers, score HUD, and feedback cues for overloads/missed items; tuned difficulty ramp for co-op pacing.
+- **Custom 3D assets:** Modeled washers, dryers, baskets, and props in **Blender** to give the laundromat a distinct feel.
+- **Team workflow:** Used **Git + merge requests**, code reviews, and a **Kanban board** to manage tasks; held weekly check-ins to synchronize mechanics and art.
+- **Playtesting:** Ran user tests for clarity, difficulty balance, and UI readability; iterated on prompts, timers, and layout based on feedback.
+
+## Results
+
+- Delivered a **fully playable co-op laundry sim** with sorting, washing, drying, folding, scoring, and penalties for violations.
+- Established a **repeatable team workflow** (MRs, reviews, Kanban) that kept Unity scenes, scripts, and Blender assets in sync.
+- Integrated **custom Blender assets** and polished UI cues so players quickly grasped the chaos and objectives.
+
+## Learnings
+
+<img
+  src="/images/projects/load-and-chaos/unity.png"
+  alt="Unity"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+<img
+  src="/images/projects/load-and-chaos/blender.png"
+  alt="Unity"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+- **Unity + C#:** Interaction systems, timers, state handling, and input flows for local co-op.
+- **Blender:** Low-poly modeling and export pipelines into Unity prefabs.
+- **Collaboration:** Branching, MRs, and conflict resolution for scenes/assets; structured standups and checklists.
+- **UX for games:** Signaling state (ready/washing/drying/done), pacing difficulty, and conveying errors under time pressure.
+
+## Next Steps
+
+- Add **online co-op** netcode and better controller support.
+- Expand **levels and chaos events** (e.g., machine breakdowns, priority orders, random spills).
+- Ship a **tutorial onboarding** with progressive tasks and clearer affordances for new players.
+- Improve **accessibility**: colorblind-safe indicators and haptics-friendly feedback.
+
+## Credits
+
+- **Role:** Game Developer (logic, gameplay), 3D Modeling, Project Manager
+- **Team:** Anna Zhang, Ava Denucci, Baiya Ding, 
+- **Stack/Tools:** Unity (C#), Blender, Git + Merge Requests, Kanban, UI/Level design, user testing
+5:T2ac5,
+## Overview
+
+This project involved conducting in-depth UX research on the **UW-Madison Course Enrollment System** to understand user pain points, mental models, and opportunities for improvement. Through a mixed-methods approach combining user interviews, journey mapping, usability testing, and design modeling, we identified critical areas for redesign and proposed solutions for a more intuitive enrollment experience.
+
+### Problem Statement
+
+Students at UW-Madison struggle with course enrollment due to a confusing interface, lack of integrated information, and inefficient workflows. The current system requires navigating between multiple tools (Course Search, DARS, Madgrades) and fails to provide comprehensive course information in one place, leading to frustration and enrollment errors.
+
+---
+
+## Research Methodology
+
+### Participants & Approach
+- **3 UW-Madison students** across different academic levels
+- **Qualitative interviews** to understand current processes
+- **Usability testing** with live system demonstrations
+- **Contextual inquiry** in study environments
+
+### Research Methods Applied
+1. **Journey Mapping** - Visualized user experiences and touchpoints
+2. **Affinity Diagramming** - Grouped findings into meaningful themes
+3. **Cultural Modeling** - Understood institutional context and constraints
+4. **Flow Diagramming** - Mapped user workflows and decision points
+5. **Physical Modeling** - Documented real-world usage contexts
+
+---
+
+## Research Methods & Artifacts
+
+### 1. Journey Mapping
+
+![Journey Map](/images/projects/course-enrollment/research/Journey%20Mapping.png)
+
+Journey mapping revealed how students navigate the enrollment process across multiple touchpoints and systems. We documented the emotional highs and lows, pain points, and moments of confusion that occur at each stage of the enrollment journey.
+
+**Key Insights from Journey Mapping:**
+- Students experience frustration when switching between tools
+- Lack of clear feedback creates anxiety during enrollment
+- Information gaps require manual research outside the system
+- Advisory support is critical at decision points
+
+---
+
+### 2. Affinity Diagramming
+
+![Affinity Diagram](/images/projects/course-enrollment/research/Affinity%20Diagram.png)
+
+Through affinity diagramming, we synthesized findings from interviews and observations into meaningful themes. This helped us understand the relationships between different pain points and user needs.
+
+**Themes Identified:**
+- **Tools for Course Enrollment** - Current tools and their limitations
+- **Improvements on Course Search** - Better filtering and information display
+- **Course Enrollment System Challenges** - Core interface and workflow issues
+- **Advisory Support** - Need for integrated guidance
+- **User Observations** - Behavioral patterns and workarounds
+
+---
+
+## Design Thinking Models
+
+### 3. Cultural Model
+
+![Cultural Model](/images/projects/course-enrollment/research/Cultural%20Model.png)
+
+The cultural model maps the institutional and social context of course enrollment at UW-Madison. It shows how university policies, advisor roles, and peer influence shape student behavior and expectations.
+
+**Key Relationships:**
+- **UW-Madison** provides regulatory framework and policies
+- **Professors** offer guidance and course information
+- **Students** need help navigating requirements
+- **Course Enrollment System** facilitates the process
+
+---
+
+### 4. Flow Diagramming
+
+![Flow Model](/images/projects/course-enrollment/research/Flow%20Model.png)
+
+The flow model documents the step-by-step process students follow when enrolling in courses, including decision points, system interactions, and potential breakdowns.
+
+**Key Flow Steps:**
+1. Figure out how to use the enrollment system
+2. Determine course selection based on requirements
+3. Check class requirements and availability
+4. Check difficulty level and professor info
+5. Handle conflicts (full classes, waitlists)
+6. Add courses to cart and finalize enrollment
+
+---
+
+### 5. Physical Model
+
+![Physical Model](/images/projects/course-enrollment/research/Physical%20Model.jpg)
+
+The physical model documents real-world usage contexts - where students enroll, what tools they use alongside the system, and environmental factors that influence their experience.
+
+**Observed Contexts:**
+- Library study spaces with multiple laptop windows open
+- Peer collaboration and advice-seeking
+- Physical materials (degree audits, notes) referenced during enrollment
+- Time constraints during registration windows
+
+---
+
+### 6. Sequence Model
+
+![Sequence Model](/images/projects/course-enrollment/research/Sequence%20Model.png)
+
+The sequence model provides a detailed interaction timeline showing the exact steps and decision points in the enrollment journey, including necessary transitions between systems.
+
+**Sequence Highlights:**
+- Multiple back-and-forth actions between Course Search and DARS
+- Need to check Madgrades for professor information
+- Scheduler integration for conflict checking
+- Final enrollment confirmation step
+
+## Key Findings
+
+### Major Pain Points
+
+**System Challenges**
+- Confusing interface with unclear navigation
+- Lack of detailed course filtering options
+- Missing prerequisite information integration
+- Poor professor review functionality
+- Enrollment page complexity and lack of confirmation steps
+
+**Workflow Inefficiencies**
+- Students must switch between multiple systems (DARS, Course Search, Madgrades)
+- No unified view of course requirements and availability
+- Difficulty navigating prerequisite checks
+- Insufficient back-and-forth action support
+
+**Information Gaps**
+- Limited course descriptions and details
+- No integrated professor ratings or student feedback
+- Missing scheduling conflict notifications
+- Incomplete course availability status indicators
+
+### User Insights
+
+#### Advisory Support Needs
+- Students need timely guidance during enrollment
+- Advisors should be more accessible and integrated
+- Clear communication about SOAR registration windows essential
+- System should proactively suggest alternatives when classes are full
+
+#### Tool Integration
+- Students actively use: UW-Madison Enrollment System, DARS, Google Chrome, Rate My Professor, Madgrades
+- Tools lack seamless integration
+- Information siloed across different platforms
+
+#### Observations About User Behavior
+- Participants use enrollment system every semester
+- Heavy reliance on peer recommendations
+- Manual tracking of course options and prerequisites
+- Participants never choose fewer courses than needed due to system frustrations
+
+---
+
+## Design Solutions
+
+### Proposed Improvements
+
+#### 1. Integrated Search Interface
+- **Unified course search** combining current system, prerequisites, and professor information
+- **Advanced filtering** by requirements, difficulty level, past grades, and availability
+- **Real-time prerequisite checking** against DARS
+- **Integrated professor ratings** and student reviews
+
+#### 2. Enhanced Course Details
+- **Comprehensive course information** in single view: description, requirements, schedule, professor info
+- **Built-in prerequisite validation** 
+- **Course availability indicators** showing section status and conflicts
+- **Complementary course suggestions** based on major requirements
+
+#### 3. Streamlined Workflow
+- **Step-by-step enrollment process** with confirmation at each stage
+- **Schedule generator** to check conflicts and optimize class times
+- **Notification system** for full courses and prerequisite updates
+- **Scheduler integration** to visualize final schedule before enrollment
+
+#### 4. Advisory Integration
+- **In-system advisor access** for questions during enrollment
+- **Contextual guidance** based on current major/requirements
+- **Proactive notifications** about critical deadlines and requirements
+- **Escalation path** for complex enrollment scenarios
+
+---
+
+## Wireframes & Prototypes
+
+The redesigned course search interface includes:
+- **Refined filtering panel** with collapsible sections for easier navigation
+- **Search results** showing key information upfront (professor, schedule, requirements)
+- **Course detail modal** with all necessary information for informed decisions
+- **Scheduler integration** allowing real-time conflict checking
+- **Enrollment cart** providing overview before final submission
+
+### Interactive Prototype
+
+![Prototype Screenshot](/images/projects/course-enrollment/design/prototype-screenshot.jpg)
+
+View the full interactive prototype on Figma:
+
+[**Open Interactive Prototype →**](https://www.figma.com/make/e4ptOo6orMDJQBaQhinoJH/University-Course-Enrollment-Dashboard?fullscreen=1&t=cbtacb8jGQZZeJuQ-1)
+
+This prototype showcases:
+- **Course search interface** with integrated filters and collapsible categories (Subjects, Seats, Breadth, General Education)
+- **Advanced filtering** by course status (Open, Wait listed, Closed)
+- **Course result cards** displaying key information: course code, title, credits, instructor, schedule, location, and available seats
+- **One-click enrollment** with visible seat availability
+- **Search functionality** supporting multiple search criteria
+- **Responsive design** optimized for student workflows
+
+---
+
+## Key Recommendations
+
+1. **Integrate multiple tools** into a single enrollment platform (eliminate context switching)
+2. **Prioritize information architecture** - show what matters first (requirements, availability, professor info)
+3. **Add prerequisite validation** within the enrollment flow, not as a separate step
+4. **Implement notification system** for full courses and enrollment deadlines
+5. **Create advisory integration** - make expert guidance accessible within the system
+6. **Improve error handling** - provide clear solutions when conflicts occur
+7. **Add filtering & sorting** - let students customize their search experience
+
+---
+
+## Impact & Outcomes
+
+This research provided UW-Madison with:
+- **Clear understanding** of current user pain points and workflows
+- **Actionable design recommendations** for system improvement
+- **Validated design direction** through user testing
+- **Foundation for prioritization** of features based on user needs
+- **Evidence-based insights** for stakeholder buy-in on redesign efforts
+
+### User Feedback
+
+- [User Feedback PDF 1](/images/projects/course-enrollment/feedback/user-feedback-1.pdf.pdf)
+- [User Feedback PDF 2](/images/projects/course-enrollment/feedback/user-feedback-2.pdf.pdf)
+
+---
+
+## Reflections
+
+This project highlighted how system complexity and fragmentation create poor user experiences even when individual tools work as intended. The key to improvement lies in **integration**, **information design**, and **user-centered workflow optimization** rather than individual feature additions.
+
+The research demonstrated that students are willing to invest effort in complex systems but need better information architecture and integration to make informed decisions efficiently.
+0:["Gmug6FAu0Mu-SA2ikC8aI",[[["",{"children":["projects",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",{"children":["projects",{"children":["__PAGE__",{},[["$L1",["$","$L2",null,{"projects":[{"frontmatter":{"slug":"robotics-vr","title":"(In Progress...)Immersive VR–Robotics Control System","date":"2025-10-01","tags":["VR/XR","Robotics","Human-Robot Interaction","ROS","Research","Motion Planning"],"shortDescription":"Adapted and extended a VR–robotics framework for intuitive control of real-world robotic arms. Integrated Meta Quest 3, Unity, and ROS to enable immersive manipulation of a UR3e robotic arm through pose-based VR interaction.","role":"Undergraduate Researcher","lab":"People and Robots Laboratory - University of Wisconsin-Madison","tools":["Meta Quest 3","Unity (C#)","ROS (Noetic)","MoveIt","Python","UR3e Robotic Arm","Inverse Kinematics","Motion Planning"],"heroImage":"/images/projects/vr-robot/i2.png","cardImage":"/images/projects/vr-robot/i.png","galleryImages":["/images/projects/vr-robot/i.png","/images/projects/vr-robot/i1.png","/images/projects/vr-robot/i2.png","/images/projects/vr-robot/i3.png","/images/projects/vr-robot/i4.png"],"featured":true},"content":"$3","readingTime":"8 min read"},{"frontmatter":{"slug":"load-and-chaos","title":"Load and Chaos: Cooperative Laundry Simulator","date":"2025-04-15","tags":["Game Dev","Unity","C#","Blender","Co-op","UX","Team Project"],"shortDescription":"A cooperative, Overcooked-inspired laundry sim where players juggle washing, drying, folding, and scoring under time pressure while following clothing care rules.","role":"Game Developer • 3D Modeling • Project Manager","tools":["Unity (C#)","Blender","Git + Merge Requests","Kanban","Game/Level/UI Design","User Testing"],"heroImage":"/images/projects/load-and-chaos/loadAndChaos.png","cardImage":"/images/projects/load-and-chaos/loadAndChaos.png","galleryImages":["/images/projects/load-and-chaos/loadAndChaos.png","/images/projects/load-and-chaos/game.png","/images/projects/load-and-chaos/KANBAN%20BOARD.png","/images/projects/load-and-chaos/UserTesting.png","/images/projects/load-and-chaos/unity.png","/images/projects/load-and-chaos/merge.png","/images/projects/load-and-chaos/blender.png","/images/projects/load-and-chaos/b.png"],"featured":true},"content":"$4","readingTime":"3 min read"},{"frontmatter":{"slug":"course-enrollment","title":"Course Enrollment System: UX Research & Design","date":"2024-11-15","tags":["UX Research","User Testing","Design Thinking","Education","Interface Design"],"shortDescription":"Conducted comprehensive UX research on UW-Madison's course enrollment system, identifying pain points and designing improved interface through journey mapping, affinity analysis, and user testing with 3 participants.","role":"UX Researcher & Designer","tools":["User Testing","Journey Mapping","Affinity Diagramming","Wireframing","Cultural Modeling","Flow Diagramming","Sequence Modeling"],"heroImage":"/images/projects/course-enrollment/design/photo1.png","galleryImages":["/images/projects/course-enrollment/design/photo1.png"],"links":null,"featured":true},"content":"$5","readingTime":"7 min read"}],"allTags":["Blender","C#","Co-op","Design Thinking","Education","Game Dev","Human-Robot Interaction","Interface Design","Motion Planning","ROS","Research","Robotics","Team Project","UX","UX Research","Unity","User Testing","VR/XR"]}],null],null],null]},[null,["$","$L6",null,{"parallelRouterKey":"children","segmentPath":["children","projects","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/portfolio/_next/static/css/7e915fd5ee364ffe.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"en","className":"__variable_f07e2c","style":{"fontFamily":"var(--font-inter)"},"children":["$","body",null,{"className":"antialiased text-gray-900","children":["$","div",null,{"className":"relative z-10","children":[["$","$L8",null,{}],["$","main",null,{"className":"min-h-screen","children":["$","$L6",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}],["$","footer",null,{"className":"bg-gray-50 border-t border-gray-200 mt-20","children":["$","div",null,{"className":"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12","children":[["$","div",null,{"className":"grid grid-cols-1 md:grid-cols-3 gap-8","children":[["$","div",null,{"children":[["$","h3",null,{"className":"text-lg font-display font-bold text-gray-900 mb-4","children":"Chang Liu"}],["$","p",null,{"className":"text-gray-600 text-sm","children":"Full-Stack Developer & HRI Researcher building robust systems and intuitive interfaces."}]]}],["$","div",null,{"children":[["$","h4",null,{"className":"text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4","children":"Quick Links"}],["$","ul",null,{"className":"space-y-2","children":[["$","li",null,{"children":["$","$L9",null,{"href":"/projects","className":"text-gray-600 hover:text-primary-600 transition-colors text-sm","children":"Projects"}]}],["$","li",null,{"children":["$","$L9",null,{"href":"/about","className":"text-gray-600 hover:text-primary-600 transition-colors text-sm","children":"About"}]}],["$","li",null,{"children":["$","$L9",null,{"href":"/resume","className":"text-gray-600 hover:text-primary-600 transition-colors text-sm","children":"Resume"}]}],["$","li",null,{"children":["$","$L9",null,{"href":"/contact","className":"text-gray-600 hover:text-primary-600 transition-colors text-sm","children":"Contact"}]}]]}]]}],["$","div",null,{"children":[["$","h4",null,{"className":"text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4","children":"Connect"}],["$","div",null,{"className":"flex space-x-4","children":[["$","a",null,{"href":"https://www.linkedin.com/in/chang-l-276423314","target":"_blank","rel":"noopener noreferrer","className":"text-gray-600 hover:text-primary-600 transition-colors","aria-label":"LinkedIn","children":["$","svg",null,{"stroke":"currentColor","fill":"currentColor","strokeWidth":"0","viewBox":"0 0 448 512","children":["$undefined",[["$","path","0",{"d":"M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z","children":[]}]]],"className":"$undefined","style":{"color":"$undefined"},"height":24,"width":24,"xmlns":"http://www.w3.org/2000/svg"}]}],["$","a",null,{"href":"mailto:changliu5101@gmail.com","className":"text-gray-600 hover:text-primary-600 transition-colors","aria-label":"Email","children":["$","svg",null,{"stroke":"currentColor","fill":"currentColor","strokeWidth":"0","viewBox":"0 0 512 512","children":["$undefined",[["$","path","0",{"d":"M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z","children":[]}]]],"className":"$undefined","style":{"color":"$undefined"},"height":24,"width":24,"xmlns":"http://www.w3.org/2000/svg"}]}]]}]]}]]}],["$","div",null,{"className":"mt-8 pt-8 border-t border-gray-200 text-center","children":["$","p",null,{"className":"text-sm text-gray-600","children":["© ",2026," Chang Liu. All rights reserved."]}]}]]}]}]]}]}]}]],null],null],["$La",null]]]]
+a:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Projects | Chang Liu"}],["$","meta","3",{"name":"description","content":"Browse my portfolio of UI/UX design, user research, and development projects"}],["$","meta","4",{"name":"author","content":"Chang Liu"}],["$","meta","5",{"name":"keywords","content":"UI Design,UX Design,Product Design,Full Stack Developer,User Research,Design Systems"}],["$","meta","6",{"name":"creator","content":"Chang Liu"}],["$","meta","7",{"name":"robots","content":"index, follow"}],["$","meta","8",{"name":"googlebot","content":"index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1"}],["$","meta","9",{"property":"og:title","content":"Chang Liu - UI/UX Designer & Developer"}],["$","meta","10",{"property":"og:description","content":"Portfolio showcasing UI/UX design and development projects"}],["$","meta","11",{"property":"og:url","content":"https://yourwebsite.com"}],["$","meta","12",{"property":"og:site_name","content":"Chang Liu Portfolio"}],["$","meta","13",{"property":"og:locale","content":"en_US"}],["$","meta","14",{"property":"og:image:type","content":"image/png"}],["$","meta","15",{"property":"og:image","content":"https://yourwebsite.com/portfolio/opengraph-image?092062c99386ed30"}],["$","meta","16",{"property":"og:image:width","content":"1200"}],["$","meta","17",{"property":"og:image:height","content":"630"}],["$","meta","18",{"property":"og:type","content":"website"}],["$","meta","19",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","20",{"name":"twitter:creator","content":"@yourusername"}],["$","meta","21",{"name":"twitter:title","content":"Chang Liu - UI/UX Designer & Developer"}],["$","meta","22",{"name":"twitter:description","content":"Portfolio showcasing UI/UX design and development projects"}],["$","meta","23",{"name":"twitter:image","content":"https://yourwebsite.com/og-image.png"}],["$","meta","24",{"name":"next-size-adjust"}]]
+1:null

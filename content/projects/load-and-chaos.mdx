@@ -1,0 +1,94 @@
+---
+slug: load-and-chaos
+title: "Load and Chaos: Cooperative Laundry Simulator"
+date: "2025-04-15"
+tags: ["Game Dev", "Unity", "C#", "Blender", "Co-op", "UX", "Team Project"]
+shortDescription: "A cooperative, Overcooked-inspired laundry sim where players juggle washing, drying, folding, and scoring under time pressure while following clothing care rules."
+role: "Game Developer • 3D Modeling • Project Manager"
+tools: ["Unity (C#)", "Blender", "Git + Merge Requests", "Kanban", "Game/Level/UI Design", "User Testing"]
+heroImage: "/images/projects/load-and-chaos/loadAndChaos.png"
+cardImage: "/images/projects/load-and-chaos/loadAndChaos.png"
+galleryImages:
+  - "/images/projects/load-and-chaos/loadAndChaos.png"
+  - "/images/projects/load-and-chaos/game.png"
+  - "/images/projects/load-and-chaos/KANBAN%20BOARD.png"
+  - "/images/projects/load-and-chaos/UserTesting.png"
+  - "/images/projects/load-and-chaos/unity.png"
+  - "/images/projects/load-and-chaos/merge.png"
+  - "/images/projects/load-and-chaos/blender.png"
+  - "/images/projects/load-and-chaos/b.png"
+featured: true
+---
+
+<img
+  src="/images/projects/load-and-chaos/game.png"
+  alt="Game Play"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+## Intro
+
+Load and Chaos is a cooperative, Overcooked-inspired laundry simulation game built for a **COMPSCI 506** team project. Players manage a chaotic laundromat—sorting, washing, drying, and folding garments—while obeying care rules and racing the clock to keep customers happy.
+
+<div className="my-6">
+  <a
+    href="/downloads/load-and-chaos-mac.zip"
+    className="inline-flex items-center gap-3 px-6 py-3.5 bg-primary-600 text-white rounded-xl font-semibold shadow-lg hover:bg-primary-700 transition duration-200"
+  >
+    <span className="text-lg">Download macOS build</span>
+    <span className="text-sm opacity-90">(.zip, offline play)</span>
+  </a>
+</div>
+
+## Problem
+
+We needed to design and ship a fully playable co-op game while learning **Unity, C#, and Blender from scratch**, and also keep a four-person team aligned on version control, asset pipelines, and gameplay goals.
+
+## Approach
+
+<img
+  src="/images/projects/load-and-chaos/KANBAN%20BOARD.png"
+  alt="Kanban board"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+
+- **Core loop in Unity (C#):** Implemented interaction detection (ray casts), item pickup/drop, machine states (washer/dryer timers), and scoring with penalties for mistakes or neglect.
+- **Level and UI design:** Built laundromat layouts, timers, score HUD, and feedback cues for overloads/missed items; tuned difficulty ramp for co-op pacing.
+- **Custom 3D assets:** Modeled washers, dryers, baskets, and props in **Blender** to give the laundromat a distinct feel.
+- **Team workflow:** Used **Git + merge requests**, code reviews, and a **Kanban board** to manage tasks; held weekly check-ins to synchronize mechanics and art.
+- **Playtesting:** Ran user tests for clarity, difficulty balance, and UI readability; iterated on prompts, timers, and layout based on feedback.
+
+## Results
+
+- Delivered a **fully playable co-op laundry sim** with sorting, washing, drying, folding, scoring, and penalties for violations.
+- Established a **repeatable team workflow** (MRs, reviews, Kanban) that kept Unity scenes, scripts, and Blender assets in sync.
+- Integrated **custom Blender assets** and polished UI cues so players quickly grasped the chaos and objectives.
+
+## Learnings
+
+<img
+  src="/images/projects/load-and-chaos/unity.png"
+  alt="Unity"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+<img
+  src="/images/projects/load-and-chaos/blender.png"
+  alt="Unity"
+  className="w-full max-w-3xl mx-auto rounded-xl shadow-md"
+/>
+- **Unity + C#:** Interaction systems, timers, state handling, and input flows for local co-op.
+- **Blender:** Low-poly modeling and export pipelines into Unity prefabs.
+- **Collaboration:** Branching, MRs, and conflict resolution for scenes/assets; structured standups and checklists.
+- **UX for games:** Signaling state (ready/washing/drying/done), pacing difficulty, and conveying errors under time pressure.
+
+## Next Steps
+
+- Add **online co-op** netcode and better controller support.
+- Expand **levels and chaos events** (e.g., machine breakdowns, priority orders, random spills).
+- Ship a **tutorial onboarding** with progressive tasks and clearer affordances for new players.
+- Improve **accessibility**: colorblind-safe indicators and haptics-friendly feedback.
+
+## Credits
+
+- **Role:** Game Developer (logic, gameplay), 3D Modeling, Project Manager
+- **Team:** Anna Zhang, Ava Denucci, Baiya Ding, 
+- **Stack/Tools:** Unity (C#), Blender, Git + Merge Requests, Kanban, UI/Level design, user testing

@@ -51,27 +51,28 @@ export default function Home() {
       <section className="py-20 bg-gray-50 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-md p-8 border border-gray-200 hover:border-gray-800 transition-colors">
-              <div className="w-12 h-12 bg-gray-800 rounded-md flex items-center justify-center mb-4">
-                <HiPencilAlt className="text-2xl text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                UI/UX Design
-              </h3>
-              <p className="text-gray-600">
-                User research, wireframing, prototyping, and design systems
-              </p>
-            </div>
 
             <div className="bg-white rounded-md p-8 border border-gray-200 hover:border-gray-800 transition-colors">
               <div className="w-12 h-12 bg-gray-800 rounded-md flex items-center justify-center mb-4">
                 <HiCode className="text-2xl text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Development
+                End-to-end software development
               </h3>
               <p className="text-gray-600">
-                Full-stack development with React, Node.js, and modern tools
+                Full-stack development across frontend, backend, and APIs, with experience in modern frameworks, data handling, and scalable system design.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-md p-8 border border-gray-200 hover:border-gray-800 transition-colors">
+              <div className="w-12 h-12 bg-gray-800 rounded-md flex items-center justify-center mb-4">
+                <HiPencilAlt className="text-2xl text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Human-centered design informed by research
+              </h3>
+              <p className="text-gray-600">
+                User research, interaction design, prototyping, and design systems grounded in usability, accessibility, and real-world constraints.
               </p>
             </div>
 
@@ -80,10 +81,10 @@ export default function Home() {
                 <HiLightningBolt className="text-2xl text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Innovation
+                Applied computing and emerging technologies
               </h3>
               <p className="text-gray-600">
-                Exploring AR/VR, robotics, and emerging technologies
+                Exploring AR/VR, robotics, and intelligent systems through hands-on experimentation, prototyping, and research-driven development.
               </p>
             </div>
           </div>

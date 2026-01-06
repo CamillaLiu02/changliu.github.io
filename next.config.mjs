@@ -1,12 +1,13 @@
+const isProd = process.env.NODE_ENV === "production";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
-  basePath: process.env.NODE_ENV === 'production' ? '/portfolio' : '',
+  basePath: "",
+  assetPrefix: "",
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
     unoptimized: true,
   },
-  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 
 export default nextConfig;

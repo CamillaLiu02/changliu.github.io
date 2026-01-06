@@ -3,13 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "export": "next build && next export",
-    "deploy": "npm run build && touch out/.nojekyll && git add out -f && git commit -m 'Deploy to GitHub Pages' && git push origin $(git rev-parse --abbrev-ref HEAD):gh-pages --force"
-  },
+  "build": "next build",
+  "deploy": "npm run build && touch out/.nojekyll && npx gh-pages -d out"
+},
   "dependencies": {
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.0",
@@ -31,7 +27,7 @@
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
-    "gh-pages": "^6.1.0",
+    "gh-pages": "^6.3.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.0",
     "typescript": "^5"

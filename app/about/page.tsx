@@ -59,6 +59,7 @@ export default function AboutPage() {
                   About Me
                 </h1>
                 <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+                  <p>Hi! My name is <strong>Chang (Camilla) Liu</strong>! </p>
                   <p>
                     I'm a <strong>computer science student and researcher</strong> focused on building <strong>intelligent, human-centered systems</strong>. My interests lie at the intersection of <strong>robotics and human–computer interaction</strong>, where <strong>full-stack software, AI-driven decision-making, and data-informed system design</strong> come together in real-world applications.
                   </p>

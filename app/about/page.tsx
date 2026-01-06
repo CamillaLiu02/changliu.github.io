@@ -60,26 +60,10 @@ export default function AboutPage() {
                 </h1>
                 <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
                   <p>
-                    Hi! I'm <strong>Chang Liu</strong>, a{' '}
-                    <strong>CS + Data Science student</strong>,{' '}
-                    <strong>full-stack engineer</strong>,{' '}
-                    <strong>HRI researcher</strong>, and{' '}
-                    <strong>UI/UX designer</strong>. I like building systems that feel
-                    thoughtful and reliable—whether that's VR→robot control, commerce
-                    search, or mobile products.
+                    I'm a <strong>computer science student and researcher</strong> focused on building <strong>intelligent, human-centered systems</strong>. My interests lie at the intersection of <strong>robotics and human–computer interaction</strong>, where <strong>full-stack software, AI-driven decision-making, and data-informed system design</strong> come together in real-world applications.
                   </p>
                   <p>
-                    I currently work as an <strong>Undergraduate Research Assistant </strong>
-                    in the People and Robots Lab (UW–Madison), adapting Meta Quest 3 to
-                    UR3e via ROS Noetic + Unity/RAMPA++, debugging motion planning, and
-                    preparing a user study on immersive teleoperation.
-                  </p>
-                  <p>
-                    Previously, I shipped commerce search features (Elasticsearch + Kafka)
-                    as a software engineering intern, fixed production firmware, and built
-                    Android/React apps like a travel mapping app and an accessibility-first
-                    safety app. I bridge research findings into full-stack systems that
-                    stay stable in the real world.
+                    I care deeply about <strong>accessibility and usability</strong>, and I aim to design systems where <strong>strong engineering and thoughtful user experience reinforce each other</strong>.
                   </p>
                   <div className="flex flex-wrap gap-2 pt-2">
                     {[ 'Full-stack engineering', 'HRI research', 'UI/UX design', 'Data & ML' ].map((tag) => (

@@ -13,7 +13,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://yourwebsite.com"),
   title: {
-    default: "Chang Liu - UI/UX Designer & Developer",
+    default: "Chang Liu - Full-Stack Developer & HRI Researcher",
     template: "%s | Chang Liu",
   },
   description:
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://yourwebsite.com",
     siteName: "Chang Liu Portfolio",
-    title: "Chang Liu - UI/UX Designer & Developer",
+    title: "Chang Liu - Full-Stack Developer & HRI Researcher",
     description:
-      "Portfolio showcasing UI/UX design and development projects",
+      "Portfolio showcasing full-stack development and HRI research projects",
       images: [
       {
         url: "/og-image.png",
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Chang Liu - UI/UX Designer & Developer",
-    description: "Portfolio showcasing UI/UX design and development projects",
+    title: "Chang Liu - Full-Stack Developer & HRI Researcher",
+    description: "Portfolio showcasing full-stack development and HRI research projects",
     images: ["/og-image.png"],
     creator: "@yourusername",
   },

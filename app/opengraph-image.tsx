@@ -30,7 +30,7 @@ export default async function Image() {
       >
         <div style={{ fontSize: 72, marginBottom: 20 }}>Chang Liu</div>
         <div style={{ fontSize: 40, fontWeight: 'normal', opacity: 0.9 }}>
-          UI/UX Designer & Developer
+          Full-Stack Developer & HRI Researcher
         </div>
       </div>
     ),

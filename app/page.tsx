@@ -99,8 +99,7 @@ export default function Home() {
               Featured Projects
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl">
-              A selection of my recent work spanning UX research, product design,
-              and technical development
+              A selection of recent work spanning human-centered design, software engineering, and applied research.
             </p>
           </div>
 
